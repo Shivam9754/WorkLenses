@@ -37,6 +37,18 @@ app.use('/uploads', express.static(uploadDir));
 app.post('/api/upload', upload.single('file'), handleUpload);
 app.post('/api/search', handleSearch);
 
+// Root route (assignment-safe)
+app.get('/', (req, res) => {
+  res.status(200).send(`
+    <h2>WorkLens Backend Running</h2>
+    <p>Status: Active</p>
+    <p>Service: WorkLens-Intelligence-Engine</p>
+  `);
+});
+
+// Prevent favicon error
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'active',
