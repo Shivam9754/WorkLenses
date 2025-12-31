@@ -8,7 +8,6 @@ const fs = require('fs');
 const { upload, handleUpload } = require('./controllers/uploadController');
 const { handleSearch } = require('./controllers/searchController');
 
-// Init app FIRST
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -22,14 +21,13 @@ if (!fs.existsSync(uploadDir)) {
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://work-lenses.vercel.app', // ✅ add your deployed frontend
-  process.env.FRONTEND_URL,         // optional env variable for flexibility
+  'https://work-lenses.vercel.app', // deployed frontend
+  process.env.FRONTEND_URL,         // optional env variable
 ].filter(Boolean);
-
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps, curl)
+    // allow requests with no origin (curl, mobile apps)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
@@ -42,7 +40,7 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions)); // handle preflight
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/uploads', express.static(uploadDir));
@@ -53,7 +51,12 @@ app.use('/uploads', express.static(uploadDir));
 app.post('/api/upload', upload.single('file'), handleUpload);
 app.post('/api/search', handleSearch);
 
-// Root route (assignment-safe)
+// ✅ Add analyze route if frontend calls it
+app.post('/api/analyze', (req, res) => {
+  res.json({ message: 'Analyze route working!' });
+});
+
+// Root route
 app.get('/', (req, res) => {
   res.status(200).send(`
     <h2>WorkLens Backend Running</h2>
