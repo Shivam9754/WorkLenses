@@ -158,20 +158,21 @@ const AnalyzerZone: React.FC<AnalyzerZoneProps> = ({ onFileDrop, isAnalyzing, re
 
     try {
       // 1. Try Backend Contextual Search if file is on server
-      if (serverFilename) {
-        const res = await fetch(`${API_BASE_URL}/api/search`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: serverFilename, keyword: userMsg })
-        });
+if (serverFilename) {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename: serverFilename, keyword: userMsg })
+  });
 
-        if (res.ok) {
-          const searchData: SearchResult = await res.json();
-          setChatHistory(prev => [...prev, { role: 'assistant', searchResult: searchData }]);
-          setIsQuerying(false);
-          return;
-        }
-      }
+  if (res.ok) {
+    const searchData: SearchResult = await res.json();
+    setChatHistory(prev => [...prev, { role: 'assistant', searchResult: searchData }]);
+    setIsQuerying(false);
+    return;
+  }
+}
+
 
       // 2. Fallback to Client-Side Gemini (Chat)
       const context = result ? `${result.markdown}` : currentFile.contentSnippet;
