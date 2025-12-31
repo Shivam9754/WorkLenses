@@ -22,8 +22,10 @@ if (!fs.existsSync(uploadDir)) {
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  process.env.FRONTEND_URL, // e.g. deployed frontend
-].filter(Boolean); // remove undefined/null
+  'https://work-lenses.vercel.app', // ✅ add your deployed frontend
+  process.env.FRONTEND_URL,         // optional env variable for flexibility
+].filter(Boolean);
+
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -40,6 +42,7 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/uploads', express.static(uploadDir));
