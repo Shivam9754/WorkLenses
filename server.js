@@ -122,3 +122,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`[WorkLens] Local Storage: ${uploadDir}`);
   console.log(`[WorkLens] Environment: ${process.env.NODE_ENV || 'development'}`);
 });
+console.log('handleSearch is:', typeof handleSearch);
+
