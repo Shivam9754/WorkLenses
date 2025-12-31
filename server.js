@@ -18,11 +18,24 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// CORS config
+// ✅ CORS config — allow multiple dev & prod origins
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  process.env.FRONTEND_URL, // e.g. deployed frontend
+].filter(Boolean); // remove undefined/null
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS not allowed from this origin: ' + origin), false);
+  },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
 // Middleware
@@ -53,7 +66,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'active',
     service: 'WorkLens-Intelligence-Engine',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -67,7 +80,7 @@ app.use((err, req, res, next) => {
     details:
       process.env.NODE_ENV === 'development'
         ? err.message
-        : 'An error occurred'
+        : 'An error occurred',
   });
 });
 
