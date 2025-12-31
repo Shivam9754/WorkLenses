@@ -134,3 +134,20 @@ OUTPUT JSON (Strict):
 };
 
 module.exports = { handleSearch };
+const handleSearch = (req, res) => {
+  try {
+    const query = req.query.q || '';
+
+    return res.status(200).json({
+      success: true,
+      message: 'Search endpoint working',
+      query
+    });
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Search failed' });
+  }
+};
+
+module.exports = { handleSearch };
+
