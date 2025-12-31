@@ -7,6 +7,8 @@ const fs = require('fs');
 // Controllers
 const { upload, handleUpload } = require('./controllers/uploadController');
 const { handleSearch } = require('./controllers/searchController');
+app.get('/api/search', handleSearch);
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
