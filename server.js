@@ -17,29 +17,29 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// ✅ CORS config — allow multiple dev & prod origins
+// ✅ Allowed origins
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://work-lenses.vercel.app', // deployed frontend
-  process.env.FRONTEND_URL,         // optional env variable
+  'https://work-lenses.vercel.app',   // deployed frontend
+  process.env.FRONTEND_URL,           // optional env variable
 ].filter(Boolean);
 
+// ✅ CORS config
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true); // allow curl/mobile apps
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    // ❌ don’t throw — just block
+    // don’t throw — just block
     return callback(null, false);
   },
   credentials: true,
   optionsSuccessStatus: 200,
 };
 
-
-// Middleware
+// ✅ Middleware (CORS FIRST)
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // handle preflight
 app.use(express.json({ limit: '50mb' }));
@@ -51,8 +51,6 @@ app.use('/uploads', express.static(uploadDir));
  */
 app.post('/api/upload', upload.single('file'), handleUpload);
 app.post('/api/search', handleSearch);
-
-// ✅ Add analyze route if frontend calls it
 app.post('/api/analyze', (req, res) => {
   res.json({ message: 'Analyze route working!' });
 });
@@ -69,6 +67,7 @@ app.get('/', (req, res) => {
 // Prevent favicon error
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
+// Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'active',
@@ -91,7 +90,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// ✅ Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`[WorkLens] Backend running on port ${PORT}`);
   console.log(`[WorkLens] Local Storage: ${uploadDir}`);
