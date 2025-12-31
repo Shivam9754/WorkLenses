@@ -27,16 +27,17 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (curl, mobile apps)
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, true); // allow curl/mobile apps
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(new Error('CORS not allowed from this origin: ' + origin), false);
+    // ❌ don’t throw — just block
+    return callback(null, false);
   },
   credentials: true,
   optionsSuccessStatus: 200,
 };
+
 
 // Middleware
 app.use(cors(corsOptions));
