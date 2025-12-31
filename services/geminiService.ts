@@ -90,7 +90,7 @@ export const analyzeFileContent = async (
 
   try {
     const response = await retryOperation(async () => {
-      const res = await fetch(`${`${import.meta.env.VITE_API_URL}/api/analyze`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
