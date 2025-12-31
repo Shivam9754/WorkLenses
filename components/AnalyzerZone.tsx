@@ -72,11 +72,11 @@ const AnalyzerZone: React.FC<AnalyzerZoneProps> = ({ onFileDrop, isAnalyzing, re
       
       console.log("Attempting upload to:", `${API_BASE_URL}/api/upload`);
 
-      const res = await fetch(`${API_BASE_URL}/api/upload`, {
-        method: 'POST',
-        body: formData
-      });
-      
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+  method: 'POST',
+  body: formData
+});
+
       if (!res.ok) {
         throw new Error(`Server responded with ${res.status}`);
       }
